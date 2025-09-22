@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import Todo from './components/Todo'
 import './App.css'
 
 
 function App()
 {
   const [task, setTask] = useState("")
-  const [desc, setDescTask] = useState("")
   const [tasks, setTasks] = useState(() => {
     return JSON.parse(localStorage.getItem("tasks"))
     || []
@@ -17,7 +17,7 @@ const [filteredTask, setFilteredTasks] = useState(tasks)
 const [filterString, SetFilterString] = useState("")
 
 useEffect(() => {
-  setFilteredTasks(tasks.filter((task) => task.name.includes(filterString)))
+  setFilteredTasks(tasks.filter((task) => true))
 }, [filterString, tasks])
 
 useEffect(() => {
@@ -28,12 +28,13 @@ const handleAdd = (e) => {
   e.preventDefault()
   const newTask = {
      id: crypto.randomUUID(),
-     name: task,
-     desc,
+     task,
+     categoty: 'active'
+     
   }
 setTasks((oldValue) => [newTask, ...oldValue])
     setTask("")
-    setDescTask("")
+    
 }
 
   const [count, setCount] = useState(0)
@@ -48,8 +49,10 @@ setTasks((oldValue) => [newTask, ...oldValue])
 
         <div className="add-todo">
             <div className="input-container">
-                <input type="text" className="todo-input" placeholder="Добавить новую задачу..." id="todoInput" onChange={(value) => setTask(value.target.value)} value={tasks}/>
+              <form onSubmit={handleAdd} action="">
+                <input type="text" className="todo-input" placeholder="Добавить новую задачу..." id="todoInput" onChange={(value) => setTask(value.target.value)} value={task}/>
                 <button className="add-btn" id="addBtn">Добавить</button>
+                </form>
             </div>
         </div>
 
@@ -60,29 +63,9 @@ setTasks((oldValue) => [newTask, ...oldValue])
         </div>
 
         <div className="todo-list">
-            <div className="todo-item">
-                <input type="checkbox" className="todo-checkbox"/>
-                <span className="todo-text">Изучить основы React</span>
-                <button className="delete-btn">Удалить</button>
-            </div>
-            
-            <div className="todo-item completed">
-                <input type="checkbox" className="todo-checkbox" />
-                <span className="todo-text">Настроить рабочее окружение</span>
-                <button className="delete-btn">Удалить</button>
-            </div>
-            
-            <div className="todo-item">
-                <input type="checkbox" className="todo-checkbox"/>
-                <span className="todo-text">Создать компонентную архитектуру</span>
-                <button className="delete-btn">Удалить</button>
-            </div>
-            
-            <div className="todo-item">
-                <input type="checkbox" className="todo-checkbox"/>
-                <span className="todo-text">Добавить стили и анимации</span>
-                <button className="delete-btn">Удалить</button>
-            </div>
+           {filteredTask.map((el) =>(
+            <Todo key={el.id}{...el}/>
+           ))}
         </div>
 
         <div className="stats">
